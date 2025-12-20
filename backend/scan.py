@@ -45,14 +45,14 @@ def check_sma_44_condition(stock):
     high_on_sma = abs(latest_high - sma_val) / sma_val <= SUPPORT_THRESHOLD
 
     if is_green and low_on_sma:
-        entry = latest_close
+        entry = latest_high
         stop_loss = latest_low
         risk = entry - stop_loss
         take_profit = entry + 2 * risk
         return "BUY", entry, stop_loss, take_profit
 
     if is_red and high_on_sma:
-        entry = latest_close
+        entry = latest_low
         stop_loss = latest_high
         risk = stop_loss - entry
         take_profit = entry - 2 * risk
