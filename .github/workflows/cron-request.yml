@@ -1,0 +1,16 @@
+name: Cron Backend Request
+
+on:
+  schedule:
+    - cron: "- cron: '15 10 * * 1-5'"
+  workflow_dispatch:
+
+jobs:
+  ping-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call backend
+        run: |
+          curl  "${{ secrets.BACKEND_URL }}"
+
+
