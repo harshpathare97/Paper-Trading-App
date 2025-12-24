@@ -35,9 +35,9 @@ export default defineConfig({
       workbox: {
         runtimeCaching: [
           {
-            urlPattern: ({ url }) =>
-              url.origin === new URL(import.meta.env.VITE_BACKEND_URL).origin,
-            handler: "NetworkFirst",
+            urlPattern: ({ url, request }) =>
+              request.method === 'GET' && url.pathname === '/data',
+              handler: "NetworkFirst",
             options: {
               cacheName: "backend-api",
               networkTimeoutSeconds: 5,
