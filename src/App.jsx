@@ -79,7 +79,7 @@ export default function App() {
         <div className="flex flex-col grow items-center justify-center space-y-4">
           <div>
             <p className="text-lg text-center text-red-500">
-              503 Service temporarily unavailable.{" "}
+              503 Service temporarily unavailable.
             </p>
             <p className="text-lg text-center text-red-500">
               Please try again later
