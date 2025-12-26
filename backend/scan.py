@@ -95,7 +95,7 @@ def update_trade_status():
             trade.save()
 
 def run_scan():
-    # update_trade_status()
+    update_trade_status()
 
     if not is_market_open_today():
         return
