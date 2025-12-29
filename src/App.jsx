@@ -47,26 +47,28 @@ export default function App() {
           Paper Trading App
         </h1>
       </div>
-      <div className="sticky top-0 z-20 flex flex-row justify-center gap-2 p-2 bg-gray-100 dark:bg-gray-900">
-        <div
-          className={`text-lg font-semibold text-center p-2 rounded-xl cursor-pointer ${
-            isPortfolio
-              ? "bg-gray-200 text-blue-600 dark:bg-gray-800 dark:text-blue-400"
-              : "text-blue-600 dark:text-blue-400"
-          }`}
-          onClick={() => setIsPortflio(true)}
-        >
-          Portfolio
-        </div>
-        <div
-          className={`text-lg font-semibold text-center p-2 rounded-xl cursor-pointer ${
-            !isPortfolio
-              ? "bg-gray-200 text-blue-600 dark:bg-gray-800 dark:text-blue-400"
-              : "text-blue-600 dark:text-blue-400"
-          }`}
-          onClick={() => setIsPortflio(false)}
-        >
-          History
+      <div className="sticky top-0 z-20 flex justify-center gap-2 p-2 bg-gray-100 dark:bg-gray-900">
+        <div className="flex flex-row bg-gray-200 dark:bg-gray-800 p-1 rounded-full gap-2">
+          <button
+            className={`text-lg font-semibold text-center py-2 px-4 rounded-full cursor-pointer ${
+              isPortfolio
+                ? "bg-white text-blue-600 dark:bg-gray-700 dark:text-blue-400"
+                : "text-blue-600 dark:text-blue-400"
+            }`}
+            onClick={() => setIsPortflio(true)}
+          >
+            Portfolio
+          </button>
+          <button
+            className={`text-md font-semibold text-center py-2 px-4 rounded-full cursor-pointer ${
+              !isPortfolio
+                ? "bg-white text-blue-600 dark:bg-gray-700 dark:text-blue-400"
+                : "text-blue-600 dark:text-blue-400"
+            }`}
+            onClick={() => setIsPortflio(false)}
+          >
+            History
+          </button>
         </div>
       </div>
 
@@ -98,11 +100,11 @@ export default function App() {
         </div>
       ) : (
         <>
-            {isPortfolio ? (
-              <Portfolio portfolioData={portfolioData} />
-            ) : (
-              <History historyData={historyData} />
-            )}
+          {isPortfolio ? (
+            <Portfolio portfolioData={portfolioData} />
+          ) : (
+            <History historyData={historyData} />
+          )}
         </>
       )}
     </div>

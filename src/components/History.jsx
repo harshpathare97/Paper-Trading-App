@@ -16,16 +16,22 @@ export default function History({ historyData }) {
 
   return (
     <div>
-      <div className="mb-2 mx-2 p-2 rounded-md bg-gray-100 dark:bg-gray-900 text-center">
+      {/* Total P/L */}
+      <div
+        className="mx-2 rounded-xl bg-white dark:bg-gray-900 p-2 text-center
+                  border border-gray-200 dark:border-gray-700 shadow-sm"
+      >
         <p
-          className={`font-semibold ${
+          className={`text-lg font-semibold ${
             totalProfitLoss < 0 ? "text-red-500" : "text-green-500"
           }`}
         >
-          Total: {Math.round(totalProfitLoss * 100) / 100}
+          Total P/L: {Math.round(totalProfitLoss * 100) / 100}
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-2 pb-2">
+
+      {/* History List */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2 pb-2">
         {historyData
           .slice()
           .reverse()
@@ -35,36 +41,47 @@ export default function History({ historyData }) {
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 bg-gray-200 dark:bg-gray-800 flex flex-col justify-between rounded-md shadow-sm dark:shadow-none"
+              className="group flex flex-col gap-3 p-3
+            bg-white dark:bg-gray-800
+            rounded-xl border border-gray-200 dark:border-gray-700
+            shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700"
             >
-              <div className="flex flex-row justify-between w-full">
-                <h2 className="font-semibold text-gray-700 dark:text-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-gray-900 dark:text-gray-100">
                   {item.symbol}
                 </h2>
-                <p
-                  className={`${
-                    item.profit_loss < 0 ? "text-red-500 " : "text-green-500"
+
+                <span
+                  className={`text-sm font-bold ${
+                    item.profit_loss < 0 ? "text-red-500" : "text-green-500"
                   }`}
                 >
                   {item.profit_loss}
-                </p>
+                </span>
               </div>
 
-              <div className="flex flex-row flex-wrap space-x-4">
-                <p
-                  className={`text-sm ${
-                    item.signal === "BUY"
-                      ? "text-green-500 dark:text-green-400"
-                      : "text-red-500 drak:text-red-400"
-                  }`}
+              <div className="text-sm flex flex-row space-x-3 items-center">
+                <span
+                  className={`inline-block px-2 py-1 text-xs font-bold rounded-full
+                ${
+                  item.signal === "BUY"
+                    ? "bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400"
+                    : "bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400"
+                }`}
                 >
                   {item.signal}
+                </span>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Entry:
+                  <span className="ml-1 text-gray-900 dark:text-gray-200">
+                    {item.entry}
+                  </span>
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Entry: {item.entry}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Exit: {item.exit}
+                <p className="text-gray-500 dark:text-gray-400">
+                  Exit:
+                  <span className="ml-1 text-gray-900 dark:text-gray-200">
+                    {item.exit}
+                  </span>
                 </p>
               </div>
             </a>
