@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, FloatField, DateTimeField
+from mongoengine import Document, StringField, FloatField, BooleanField
 from datetime import datetime
 
 class Portfolio(Document):    
