@@ -15,6 +15,7 @@ export default defineConfig({
         name: "Paper Trading App",
         short_name: "PaperTradingApp",
         description: "A simple paper trading application",
+        theme_color: "#000000",
         background_color: "#ffffff",
         display: "standalone",
         start_url: "/",
