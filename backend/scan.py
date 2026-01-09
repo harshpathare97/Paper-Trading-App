@@ -33,8 +33,8 @@ def check_sma_44_condition(stock):
     is_green = latest_close > latest_open
     is_red = latest_close < latest_open
 
-    low_on_sma = abs(latest_low - sma_val) / sma_val <= SUPPORT_THRESHOLD
-    high_on_sma = abs(latest_high - sma_val) / sma_val <= SUPPORT_THRESHOLD
+    low_on_sma = abs(latest_low - sma_val) / sma_val <= SUPPORT_THRESHOLD and sma_val <= latest_low
+    high_on_sma = abs(latest_high - sma_val) / sma_val <= SUPPORT_THRESHOLD and sma_val >= latest_high
 
     if is_green and low_on_sma:
         close = latest_close
@@ -55,44 +55,69 @@ def check_sma_44_condition(stock):
     return None, None, latest_close, 0, 0, 0
 
 def update_trade_status():
-    open_trades = Portfolio.objects() 
+    open_trades = Portfolio.objects()
 
     for trade in open_trades:
         stock = yf.Ticker(f"{trade.symbol}.NS")
-        latest_close = stock.history(period="1d")["Close"].iloc[-1]
-        latest_close = round(float(latest_close), 2)
-        profit_loss = None
+        hist = stock.history(period="1d")
 
-        if trade.signal == 'BUY':
-            if latest_close >= trade.target:
-                profit_loss = trade.target - trade.entry  # Profit
-            elif latest_close <= trade.stop_loss:
-                profit_loss = trade.stop_loss - trade.entry  # Loss (negative)
-        elif trade.signal == 'SELL': 
-            if latest_close <= trade.target:
-                profit_loss = trade.entry - trade.target  # Profit
-            elif latest_close >= trade.stop_loss:
-                profit_loss = trade.entry - trade.stop_loss  # Loss (negative)
-            
-        if profit_loss is not None:
-            closed_trade = History(
-                symbol=trade.symbol,
-                signal=trade.signal,
-                entry=trade.entry,
-                exit=latest_close,
-                profit_loss=round(float(profit_loss), 2),
-                link=trade.link
-            )
-            closed_trade.save()
-            trade.delete()
-        else:
-            if latest_close > trade.close:
-                trade.candle = "green"
-            elif latest_close < trade.close:
-                trade.candle = "red"
+        if hist.empty:
+            continue
+
+        latest = hist.iloc[-1]
+        latest_close = round(float(latest["Close"]), 2)
+        latest_high  = round(float(latest["High"]), 2)
+        latest_low   = round(float(latest["Low"]), 2)
+
+        profit_loss = None
+        exit_price = None
+
+        if not trade.entry_hit:
+            if trade.signal == "BUY" and latest_low <= trade.entry:
+                trade.entry_hit = True
+            elif trade.signal == "SELL" and latest_high >= trade.entry:
+                trade.entry_hit = True
 
             trade.close = latest_close
             trade.save()
+            continue
+
+        if trade.signal == "BUY":
+            if latest_high >= trade.target:
+                profit_loss = trade.target - trade.entry
+                exit_price = trade.target
+            elif latest_low <= trade.stop_loss:
+                profit_loss = trade.stop_loss - trade.entry
+                exit_price = trade.stop_loss
+
+        elif trade.signal == "SELL":
+            if latest_low <= trade.target:
+                profit_loss = trade.entry - trade.target
+                exit_price = trade.target
+            elif latest_high >= trade.stop_loss:
+                profit_loss = trade.entry - trade.stop_loss
+                exit_price = trade.stop_loss
+
+        if profit_loss is not None:
+            History(
+                symbol=trade.symbol,
+                signal=trade.signal,
+                entry=trade.entry,
+                exit=exit_price,
+                profit_loss=round(float(profit_loss), 2),
+                link=trade.link
+            ).save()
+
+            trade.delete()
+            continue
+
+        if latest_close > trade.close:
+            trade.candle = "green"
+        elif latest_close < trade.close:
+            trade.candle = "red"
+
+        trade.close = latest_close
+        trade.save()
 
 def run_scan():
     update_trade_status()
@@ -116,6 +141,7 @@ def run_scan():
                 signal=signal,
                 candle=candle,
                 close=round(float(close), 2),
+                entry_hit=False,
                 entry=round(float(entry), 2),
                 stop_loss=round(float(sl), 2),
                 target=round(float(tp), 2),

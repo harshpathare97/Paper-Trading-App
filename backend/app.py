@@ -15,7 +15,6 @@ connect(host=os.getenv("MONGO_URI"))
 
 @app.route("/scan", methods=["GET"])
 def scan_stocks():
-    print("running scan")
     run_scan()
     return Response(status=204)
 
@@ -24,7 +23,7 @@ def hello():
     portfolio = list(
         Portfolio.objects()
         .only("symbol", "signal", "candle", "close", "entry", "stop_loss", "target", "link")
-        .exclude("id")
+        .exclude("id", "entry_hit")
         .as_pymongo()
         )
    

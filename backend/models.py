@@ -6,6 +6,7 @@ class Portfolio(Document):
     signal = StringField(max_length=10, required=True)
     candle = StringField(max_length=10, required=True)
     close = FloatField(required=True)
+    entry_hit = BooleanField(default=False)
     entry = FloatField(required=True)
     stop_loss = FloatField(required=True)
     target = FloatField(required=True)

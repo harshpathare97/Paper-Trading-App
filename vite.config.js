@@ -10,12 +10,11 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "robots.txt"],
+      includeAssets: ["favicon.ico"],
       manifest: {
         name: "Paper Trading App",
         short_name: "PaperTradingApp",
         description: "A simple paper trading application",
-        theme_color: "#3b82f6",
         background_color: "#ffffff",
         display: "standalone",
         start_url: "/",
@@ -29,26 +28,6 @@ export default defineConfig({
             src: "/pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
-          },
-        ],
-      },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: ({ url, request }) =>
-              request.method === 'GET' && url.pathname === '/data',
-              handler: "NetworkFirst",
-            options: {
-              cacheName: "backend-api",
-              networkTimeoutSeconds: 5,
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, 
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
           },
         ],
       },
