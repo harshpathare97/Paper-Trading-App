@@ -72,13 +72,20 @@ def update_trade_status():
         profit_loss = None
         exit_price = None
 
+        if trade.close is not None:
+            if latest_close > trade.close:
+                trade.candle = "green"
+            elif latest_close < trade.close:
+                trade.candle = "red"
+
+        trade.close = latest_close
+
         if not trade.entry_hit:
             if trade.signal == "BUY" and latest_low <= trade.entry:
                 trade.entry_hit = True
             elif trade.signal == "SELL" and latest_high >= trade.entry:
                 trade.entry_hit = True
-
-            trade.close = latest_close
+                
             trade.save()
             continue
 
@@ -111,12 +118,6 @@ def update_trade_status():
             trade.delete()
             continue
 
-        if latest_close > trade.close:
-            trade.candle = "green"
-        elif latest_close < trade.close:
-            trade.candle = "red"
-
-        trade.close = latest_close
         trade.save()
 
 def run_scan():
