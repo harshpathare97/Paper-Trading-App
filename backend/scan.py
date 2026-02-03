@@ -81,9 +81,9 @@ def update_trade_status():
         trade.close = latest_close
 
         if not trade.entry_hit:
-            if trade.signal == "BUY" and latest_low <= trade.entry:
+            if trade.signal == "BUY" and latest_low >= trade.entry:
                 trade.entry_hit = True
-            elif trade.signal == "SELL" and latest_high >= trade.entry:
+            elif trade.signal == "SELL" and latest_high <= trade.entry:
                 trade.entry_hit = True
                 
             trade.save()
